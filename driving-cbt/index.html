@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Prepare for the Nigerian FRSC driving test with a realistic 40-question, 30-minute CBT mock exam covering road signs, traffic rules and safe driving.">
+    <meta name="theme-color" content="#0f172a">
+    <title>Nigerian Driving CBT | Mock Test</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@700;900&family=Rubik+Glitch&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen active auth-screen">
+            <div class="auth-box glass-panel">
+                <div class="logo-placeholder">NDDT</div>
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Log in to continue your CBT test</p>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="login-password" required placeholder="Enter your password">
+                            <button type="button" class="toggle-password" data-target="login-password">👁️</button>
+                        </div>
+                    </div>
+                    <div id="login-error" class="error-message hidden"></div>
+                    <button type="submit" class="btn primary-btn full-width">Log In</button>
+                </form>
+                <p class="auth-switch">Don't have an account? <a href="#" id="go-to-signup">Sign up</a></p>
+            </div>
+        </div>
+
+        <!-- Signup Screen -->
+        <div id="signup-screen" class="screen auth-screen">
+            <div class="auth-box glass-panel">
+                <div class="logo-placeholder">NDDT</div>
+                <h2>Create Account</h2>
+                <p class="subtitle">Register to take your driving tests</p>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="signup-password" required placeholder="Create a password">
+                            <button type="button" class="toggle-password" data-target="signup-password">👁️</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="signup-confirm-password" required placeholder="Confirm your password">
+                            <button type="button" class="toggle-password" data-target="signup-confirm-password">👁️</button>
+                        </div>
+                    </div>
+                    <div id="signup-error" class="error-message hidden"></div>
+                    <button type="submit" class="btn primary-btn full-width">Sign Up</button>
+                </form>
+                <p class="auth-switch">Already have an account? <a href="#" id="go-to-login">Log in</a></p>
+            </div>
+        </div>
+
+        <!-- Landing Screen -->
+        <div id="landing-screen" class="screen">
+            <div class="header-nav">
+                <div class="user-greeting" id="user-greeting">Welcome, User!</div>
+                <button id="logout-btn" class="btn outline-btn small-btn">Log Out</button>
+            </div>
+            <div class="glass-panel">
+                <h1>Nigerian Driving CBT</h1>
+                <p>Prepare for your official driving test with this mock exam.</p>
+                
+                <div class="category-selection">
+                    <label>Select Your Vehicle Category:</label>
+                    <div class="radio-group">
+                        <label class="radio-card">
+                            <input type="radio" name="category" value="car" checked>
+                            <span class="card-content">
+                                <span class="icon">🚗</span>
+                                <span>Car (Class B and D)</span>
+                            </span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="category" value="trailer">
+                            <span class="card-content">
+                                <span class="icon">🚛</span>
+                                <span>Trailer / Truck (Class G)</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="test-info">
+                    <p>🕒 <strong>Time:</strong> 30 Minutes</p>
+                    <p>📝 <strong>Questions:</strong> 40 Multiple Choice</p>
+                    <p>🎯 <strong>Pass Mark:</strong> 60%</p>
+                </div>
+
+                <button id="start-btn" class="primary-btn">Start Test</button>
+            </div>
+
+            <footer class="app-footer">
+                <p class="footer-powered">Powered by</p>
+                <div class="or7-badge" aria-label="OR7">
+                    <div class="or7-hex">
+                        <span class="or7-text">OR<span class="or7-seven">7</span></span>
+                    </div>
+                </div>
+                <div class="footer-brand">richydos</div>
+                <p class="footer-year">© <span id="footer-year">2026</span> Nigerian Driving CBT. All rights reserved.</p>
+            </footer>
+        </div>
+
+        <!-- Test Screen -->
+        <div id="test-screen" class="screen">
+            <div class="glass-panel test-panel">
+                <div class="test-header">
+                    <div class="progress-container">
+                        <span id="question-counter">Question 1 of 40</span>
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="timer">
+                        <span class="icon">⏳</span>
+                        <span id="time-left">30:00</span>
+                    </div>
+                </div>
+                
+                <div id="question-navigator" class="question-navigator"></div>
+
+                <div class="question-container">
+                    <div id="question-image-container" class="question-diagram" style="display: none;"></div>
+                    <h2 id="question-text">Loading question...</h2>
+                    <div id="options-container" class="options-grid">
+                        <!-- Options injected via JS -->
+                    </div>
+                </div>
+
+                <div class="test-controls">
+                    <button id="prev-btn" class="secondary-btn" disabled>Previous</button>
+                    <button id="next-btn" class="primary-btn">Next</button>
+                    <button id="submit-btn" class="submit-btn" style="display: none;">Submit Test</button>
+                </div>
+                <p class="keyboard-hint">💡 Tip: use ← → arrow keys to navigate and A–D to pick an answer</p>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="result-screen" class="screen">
+            <div class="glass-panel result-panel">
+                <h2>Test Completed!</h2>
+                
+                <div class="score-display">
+                    <div class="circular-progress">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="score-circle" class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="percentage" id="score-percentage">0%</div>
+                    </div>
+                    <p id="score-message" class="score-message">Evaluating your performance...</p>
+                </div>
+
+                <div class="score-breakdown">
+                    <div class="breakdown-item correct">
+                        <span class="count" id="correct-count">0</span>
+                        <span class="label">Correct</span>
+                    </div>
+                    <div class="breakdown-item wrong">
+                        <span class="count" id="wrong-count">0</span>
+                        <span class="label">Wrong</span>
+                    </div>
+                    <div class="breakdown-item unanswered">
+                        <span class="count" id="unanswered-count">0</span>
+                        <span class="label">Skipped</span>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Study Recommendations</h3>
+                    <div id="review-notes" class="review-notes">
+                        <!-- Study notes injected via JS -->
+                    </div>
+                </div>
+
+                <div class="answer-review-section">
+                    <h3>📋 Answer Review</h3>
+                    <div id="answer-review"></div>
+                </div>
+
+                <div class="result-actions">
+                    <button id="retake-btn" class="primary-btn">Retake Test</button>
+                    <button id="restart-btn" class="secondary-btn">Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/questions.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
