@@ -1047,3 +1047,96 @@ button {
     .sign-frame { width: 125px; }
     .result-actions { flex-direction: column; align-items: center; }
 }
+
+/* ===== PUBLIC ARTICLE PAGE (road-signs.html) ===== */
+
+.article-page {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.article-page h1 {
+    text-align: center;
+}
+
+.article-page .subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.article-intro {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 3px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2.5rem;
+}
+
+.sign-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.sign-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.2rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.sign-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-3px);
+}
+
+.sign-art {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.sign-art svg {
+    width: 110px;
+    height: 110px;
+}
+
+.sign-card h2 {
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+    color: var(--text-main);
+}
+
+.sign-card p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.article-cta {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.article-cta .btn {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.free-guide-link {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .sign-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+    .sign-card { padding: 0.9rem; }
+    .sign-art svg { width: 90px; height: 90px; }
+    .sign-card h2 { font-size: 0.95rem; }
+}
