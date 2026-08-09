@@ -247,6 +247,14 @@ p {
     display: none;
 }
 
+.resend-row {
+    margin-top: 1rem;
+}
+
+.resend-row.hidden {
+    display: none;
+}
+
 /* ===== LANDING / DASHBOARD SCREEN ===== */
 
 .header-nav {

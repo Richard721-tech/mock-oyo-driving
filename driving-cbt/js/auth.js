@@ -42,6 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const userGreeting = document.getElementById('user-greeting');
     const logoutBtn = document.getElementById('logout-btn');
 
+    const resendRow = document.getElementById('resend-row');
+    const resendLink = document.getElementById('resend-verification');
+
+    // Signup and "resend verification" both sign in temporarily. While that is
+    // happening the auth-state listener must not sign the user out from under
+    // them, or the verification email never gets sent.
+    let authFlowInProgress = false;
+
     // Utility to switch screens safely
     function switchAuthScreen(from, to) {
         if(from) from.classList.remove('active');
@@ -96,18 +104,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    function showResendRow() {
+        if(resendRow) resendRow.classList.remove('hidden');
+    }
+
     // Handle Firebase Auth State Changes
-    onAuthStateChanged(auth, (user) => {
+    function renderAuthState(user) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
 
         if (user) {
             if (!user.emailVerified) {
                 // User exists but hasn't verified email
                 showError(loginError, 'Please verify your email address to log in. Check your inbox!');
+                showResendRow();
                 signOut(auth);
                 if(loginScreen) loginScreen.classList.add('active');
             } else {
                 // Fully verified and logged in
+                if(resendRow) resendRow.classList.add('hidden');
                 if(userGreeting) {
                     const firstName = user.displayName ? user.displayName.split(' ')[0] : 'User';
                     userGreeting.textContent = `Welcome back, ${firstName}!`;
@@ -118,6 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Not logged in
             if(loginScreen) loginScreen.classList.add('active');
         }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        // Signup / resend drive their own UI and clean up after themselves.
+        if (authFlowInProgress) return;
+        renderAuthState(user);
     });
 
     // Handle Signup
@@ -143,23 +163,40 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = signupForm.querySelector('button');
             btn.disabled = true;
             btn.textContent = 'Creating account...';
+            authFlowInProgress = true;
 
             try {
                 // Create user in Firebase
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                
-                // Update their profile with their name
-                await updateProfile(userCredential.user, { displayName: name });
-                
+
+                // Update their profile with their name. Not worth failing signup over.
+                try {
+                    await updateProfile(userCredential.user, { displayName: name });
+                } catch (profileError) {
+                    console.error("Profile update error:", profileError);
+                }
+
                 // Send verification email
-                await sendEmailVerification(userCredential.user);
-                
+                let emailSent = true;
+                try {
+                    await sendEmailVerification(userCredential.user);
+                } catch (mailError) {
+                    emailSent = false;
+                    console.error("Verification email error:", mailError);
+                }
+
                 // Sign them out immediately so they are forced to verify
                 await signOut(auth);
 
-                showError(loginError, 'Account created! Please check your email to verify your account before logging in.', true);
                 switchAuthScreen(signupScreen, loginScreen);
                 signupForm.reset();
+
+                if (emailSent) {
+                    showError(loginError, 'Account created! Please check your email to verify your account before logging in.', true);
+                } else {
+                    showError(loginError, 'Account created, but we could not send the verification email. Enter your details below and use "Resend it".');
+                }
+                showResendRow();
 
             } catch (error) {
                 console.error("Signup error:", error);
@@ -171,6 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     showError(signupError, error.message);
                 }
             } finally {
+                authFlowInProgress = false;
                 btn.disabled = false;
                 btn.textContent = 'Sign Up';
             }
@@ -211,12 +249,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Resend the verification email. Firebase can only send it for a signed-in
+    // user, so we sign in with the credentials already typed into the login form,
+    // send the mail, then sign back out.
+    if(resendLink) {
+        resendLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                showError(loginError, 'Enter your email and password above, then click "Resend it".');
+                return;
+            }
+
+            resendLink.textContent = 'Sending...';
+            authFlowInProgress = true;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+                if (userCredential.user.emailVerified) {
+                    // Nothing to resend, they are already good to go.
+                    authFlowInProgress = false;
+                    resendRow.classList.add('hidden');
+                    renderAuthState(userCredential.user);
+                    return;
+                }
+
+                await sendEmailVerification(userCredential.user);
+                await signOut(auth);
+                showError(loginError, 'Verification email sent. Check your inbox, including the spam folder.', true);
+
+            } catch (error) {
+                console.error("Resend verification error:", error);
+                if (error.code === 'auth/invalid-credential') {
+                    showError(loginError, 'Invalid email or password.');
+                } else if (error.code === 'auth/too-many-requests') {
+                    showError(loginError, 'Too many attempts. Please wait a few minutes before trying again.');
+                } else {
+                    showError(loginError, error.message);
+                }
+                if (auth.currentUser) await signOut(auth);
+            } finally {
+                authFlowInProgress = false;
+                resendLink.textContent = 'Resend it';
+            }
+        });
+    }
+
     // Handle Logout
     if(logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             signOut(auth).then(() => {
                 if(loginForm) loginForm.reset();
                 if(signupForm) signupForm.reset();
+                if(resendRow) resendRow.classList.add('hidden');
             }).catch((error) => {
                 console.error("Sign out error", error);
             });
