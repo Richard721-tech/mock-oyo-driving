@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://richard721-tech.github.io/mock-oyo-driving/driving-cbt/sitemap.xml
